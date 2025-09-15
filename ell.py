@@ -705,6 +705,38 @@ if run_analysis:
                         }
                     )
 
+    # --- ADD THIS CODE FOR THE DOWNLOAD BUTTON ---
+
+# Check if both dataframes exist before proceeding
+if 'ml_df' in locals() and 'feats' in locals() and not feats.empty:
+    
+    # Select only the Ticker and Close columns from the features dataframe
+    price_data = feats[['Ticker', 'Close']].copy()
+    
+    # Merge the ML predictions with the price data
+    download_df = pd.merge(ml_df, price_data, on='Ticker', how='left')
+    
+    # Define the columns you want in your CSV file
+    # Note: Renaming columns to match your request for clarity
+    download_df = download_df.rename(columns={
+        'Prob_Buy': 'Prob_Buy',
+        'Prob_Sell': 'Prob_Sell',
+        'Prob_Hold': 'Prob_Hold',
+        'Close': 'Closing_Price'
+    })
+    
+    # Select and reorder columns for the final CSV output
+    output_columns = ['Ticker', 'Closing_Price', 'ML_Pred', 'Prob_Buy', 'Prob_Sell', 'Prob_Hold']
+    final_df_for_download = download_df[output_columns]
+
+    # Create the download button for the merged data
+    st.download_button(
+       label="📥 Download ML Signals as CSV",
+       data=final_df_for_download.to_csv(index=False).encode('utf-8'),
+       file_name='ml_signals_with_price.csv',
+       mime='text/csv',
+    )
+
     if 'preds_rule' in locals() and preds_rule is not None and not preds_rule.empty:
         st.download_button(
             "📥 Download Rule-based Results (snapshot)",
@@ -714,6 +746,7 @@ if run_analysis:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
