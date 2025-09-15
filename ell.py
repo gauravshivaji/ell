@@ -13,6 +13,10 @@ try:
 except Exception:
     SKLEARN_OK = False
 
+# Add this right after your imports
+if 'analysis_run' not in st.session_state:
+    st.session_state.analysis_run = False
+
 # ---------------- CONFIG ----------------
 st.set_page_config(page_title="Nifty500 Buy/Sell Predictor + Elliott Wave", layout="wide")
 st.title("📊 Nifty500 Buy/Sell Predictor — Rules + Elliott Wave + ML")
@@ -589,10 +593,11 @@ with st.sidebar:
         ml_buy_thr = st.number_input("Buy threshold (e.g., 0.03 = +3%)", 0.005, 0.20, 0.03, step=0.005, format="%.3f")
         ml_sell_thr = st.number_input("Sell threshold (e.g., -0.03 = -3%)", -0.20, -0.005, -0.03, step=0.005, format="%.3f")
 
-    run_analysis = st.button("Run Analysis")
+    if st.button("Run Analysis"):
+        st.session_state.analysis_run = True
 
 # ---------------- MAIN ----------------
-if run_analysis:
+if st.session_state.analysis_run:
     sma_tuple = (sma_w1, sma_w2, sma_w3)
 
     with st.spinner("Fetching data & computing rule-based + Elliott features..."):
@@ -746,6 +751,7 @@ if 'ml_df' in locals() and 'feats' in locals() and not feats.empty:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
