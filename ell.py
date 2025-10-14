@@ -509,7 +509,7 @@ def build_ml_dataset_for_tickers(
         X_list.append(use[feature_cols])
         y_list.append(data["Label"])
         meta_list.append(pd.Series([t] * len(use), index=use.index, name="Ticker"))
-3
+
     if not X_list:
         return pd.DataFrame(), pd.Series(dtype=int), [], []
 
@@ -751,6 +751,7 @@ if 'ml_df' in locals() and 'feats' in locals() and not feats.empty:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
