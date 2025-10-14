@@ -111,7 +111,7 @@ def stqdm(iterable, total=None, desc=""):
 
 # ---------------- DATA DOWNLOAD ----------------
 @st.cache_data(show_spinner=False)
-def download_data_multi(tickers, period="2y", interval="1d"):
+def download_data_multi(tickers, period="3y", interval="1w"):
     if isinstance(tickers, str):
         tickers = [tickers]
     frames = []
@@ -134,7 +134,7 @@ def download_data_multi(tickers, period="2y", interval="1d"):
     return out
 
 @st.cache_data(show_spinner=False)
-def load_history_for_ticker(ticker, period="5y", interval="1d"):
+def load_history_for_ticker(ticker, period="3y", interval="1w"):
     try:
         df = yf.download(ticker, period=period, interval=interval, progress=False, threads=True)
         return df
@@ -482,7 +482,7 @@ def build_ml_dataset_for_tickers(
     feature_cols = None
 
     for t in stqdm(tickers, desc="Preparing ML data"):
-        hist = load_history_for_ticker(t, period="5y", interval="1d")
+        hist = load_history_for_ticker(t, period="3y", interval="1w")
         if hist is None or hist.empty or len(hist) < min_rows:
             continue
 
@@ -543,7 +543,7 @@ def train_rf_classifier(X, y, random_state=42):
     return clf, acc, report
 
 def latest_feature_row_for_ticker(ticker, sma_windows, support_window, feature_cols, zz_pct, zz_min_bars):
-    hist = load_history_for_ticker(ticker, period="3y", interval="1d")
+    hist = load_history_for_ticker(ticker, period="3y", interval="1w")
     if hist is None or hist.empty:
         return None
     feat = compute_features(hist, sma_windows, support_window, zz_pct, zz_min_bars).dropna()
@@ -751,6 +751,7 @@ if 'ml_df' in locals() and 'feats' in locals() and not feats.empty:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
