@@ -115,7 +115,7 @@ def download_data_multi(tickers, period="2y", interval="1d"):
     if isinstance(tickers, str):
         tickers = [tickers]
     frames = []
-    batch_size = 50
+    batch_size = 20
     for i in stqdm(range(0, len(tickers), batch_size), desc="Downloading", total=len(tickers)//batch_size + 1):
         batch = tickers[i:i+batch_size]
         try:
@@ -751,6 +751,7 @@ if 'ml_df' in locals() and 'feats' in locals() and not feats.empty:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
