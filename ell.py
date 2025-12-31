@@ -687,7 +687,8 @@ if st.session_state.analysis_run:
                         if row is None:
                             continue
                         proba = clf.predict_proba(row)[0] if hasattr(clf, "predict_proba") else None
-                        pred = clf.predict(row)
+                        pred = int(clf.predict(row)[0])
+
                         rows.append({
                             "Ticker": t,
                             "ML_Pred": {1: "BUY", 0: "HOLD", -1: "SELL"}.get(int(pred), "HOLD"),
@@ -753,6 +754,7 @@ if 'ml_df' in locals() and 'feats' in locals() and not feats.empty:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
