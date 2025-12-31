@@ -122,8 +122,10 @@ def download_data_multi(tickers, period="2y", interval="1d"):
             df = yf.download(batch, period=period, interval=interval, group_by="ticker", progress=False, threads=False)
             if df is not None and not df.empty:
                 frames.append(df)
-        except Exception:
-            pass
+        except Exception as e:
+            st.info(f"Skipped batch due to Yahoo limit: {e}")
+            continue
+
     if not frames:
         return None
     out = pd.concat(frames, axis=1)
@@ -751,6 +753,7 @@ if 'ml_df' in locals() and 'feats' in locals() and not feats.empty:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
