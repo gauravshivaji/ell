@@ -119,7 +119,7 @@ def download_data_multi(tickers, period="3y", interval="1d"):
     for i in stqdm(range(0, len(tickers), batch_size), desc="Downloading", total=len(tickers)//batch_size + 1):
         batch = tickers[i:i+batch_size]
         try:
-            df = yf.download(batch, period=period, interval=interval, group_by="ticker", progress=False, threads=True)
+            df = yf.download(batch, period=period, interval=interval, group_by="ticker", progress=False, threads=False)
             if df is not None and not df.empty:
                 frames.append(df)
         except Exception:
@@ -136,7 +136,7 @@ def download_data_multi(tickers, period="3y", interval="1d"):
 @st.cache_data(show_spinner=False)
 def load_history_for_ticker(ticker, period="3y", interval="1d"):
     try:
-        df = yf.download(ticker, period=period, interval=interval, progress=False, threads=True)
+        df = yf.download(ticker, period=period, interval=interval, progress=False, threads=False)
         return df
     except Exception:
         return pd.DataFrame()
@@ -638,7 +638,7 @@ if st.session_state.analysis_run:
 
     with tab3:
         ticker_for_chart = st.selectbox("Chart Ticker", selected_tickers)
-        chart_df = yf.download(ticker_for_chart, period="6mo", interval="1d", progress=False, threads=True)
+        chart_df = yf.download(ticker_for_chart, period="6mo", interval="1d", progress=False, threads=False)
         if not chart_df.empty:
             chart_df = compute_features(chart_df, sma_tuple, support_window, zz_pct, zz_min_bars).dropna()
             if not chart_df.empty:
@@ -751,6 +751,7 @@ if 'ml_df' in locals() and 'feats' in locals() and not feats.empty:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
