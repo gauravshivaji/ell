@@ -696,7 +696,16 @@ if st.session_state.analysis_run:
                             "Prob_Hold": float(proba[list(clf.classes_).index(0)]) if proba is not None and 0 in clf.classes_ else np.nan,
                             "Prob_Sell": float(proba[list(clf.classes_).index(-1)]) if proba is not None and -1 in clf.classes_ else np.nan,
                         })
-                    ml_df = pd.DataFrame(rows).sort_values(["ML_Pred", "Prob_Buy"], ascending=[True, False])
+                    ml_df = pd.DataFrame(rows)
+                    price_df = feats[['Ticker', 'Close']].copy()
+                    ml_df = ml_df.merge(price_df, on='Ticker', how='left')
+
+                 
+                    ml_df = ml_df.rename(columns={"Close": "Current_Price"})
+
+
+                    ml_df = ml_df.sort_values(["ML_Pred", "Prob_Buy"], ascending=[True, False])
+
 
                     def tradingview_link(ticker):
                         return f"https://in.tradingview.com/chart/?symbol=NSE%3A{ticker.replace('.NS','')}"
@@ -754,6 +763,7 @@ if 'ml_df' in locals() and 'feats' in locals() and not feats.empty:
         )
 
 st.markdown("⚠ Educational use only — not financial advice.")
+
 
 
 
